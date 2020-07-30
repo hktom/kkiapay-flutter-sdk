@@ -5,23 +5,33 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'kkiapayConf.sample.dart';
 
 class KKiaPay extends StatefulWidget {
-
   int amount;
   String phone;
   String data;
+  String title;
+  Color theme;
+  Color splashTheme;
   String apikey;
   bool sandbox;
   Function callback;
 
-
-  KKiaPay({this.amount, this.phone, this.data,this.sandbox,this.apikey,this.callback});
+  KKiaPay(
+      {this.amount,
+      this.phone,
+      this.data,
+      this.sandbox,
+      this.apikey,
+      this.callback,
+      this.title = 'Paiement',
+      this.theme = 0xFFFE7367,
+      this.splashTheme: Colors.white});
 
   @override
-  _KKiaPayState createState() => _KKiaPayState(this.amount, this.phone, this.data,this.sandbox,this.apikey,this.callback);
+  _KKiaPayState createState() => _KKiaPayState(this.amount, this.phone,
+      this.data, this.sandbox, this.apikey, this.callback);
 }
 
 class _KKiaPayState extends State<KKiaPay> {
-
   final flutterWebViewPlugin = FlutterWebviewPlugin();
   final int amount;
   final String phone;
@@ -34,8 +44,9 @@ class _KKiaPayState extends State<KKiaPay> {
   // * @Params amount : Payment amount
   // * @Params phone : Payment phoneNumber
   // * @Params data : Payment data send by webhook
-  // 
-  _KKiaPayState(this.amount, this.phone, this.data,this.sandbox,this.apikey,this.callback);
+  //
+  _KKiaPayState(this.amount, this.phone, this.data, this.sandbox, this.apikey,
+      this.callback);
 
   @override
   void initState() {
@@ -48,13 +59,13 @@ class _KKiaPayState extends State<KKiaPay> {
            */
           print(url);
           final link = Uri.parse(url);
-          final transactionId =  link.queryParameters['transaction_id'];
+          final transactionId = link.queryParameters['transaction_id'];
           print(transactionId);
           print(amount);
-          callback({'amount':amount,'transactionId':transactionId},context);
+          callback({'amount': amount, 'transactionId': transactionId}, context);
           flutterWebViewPlugin.dispose();
           flutterWebViewPlugin.hide();
-          
+
           //TODO action of success payment
         }
       }
@@ -73,33 +84,32 @@ class _KKiaPayState extends State<KKiaPay> {
     print(this.apikey);
     print(this.sandbox);
     print('====================>');
-    final url = '$KKiaPayURL/?=${_SdkData(
-      amount: this.amount,
-      phone: this.phone,
-      data: this.data,
-      sandbox: this.sandbox,
-      apikey: this.apikey
-    ).toBase64()}';
-    return WebviewScaffold (
+    final url =
+        '$KKiaPayURL/?=${_SdkData(amount: this.amount, phone: this.phone, data: this.data, sandbox: this.sandbox, apikey: this.apikey, theme: widget.theme).toBase64()}';
+    return WebviewScaffold(
         url: url,
         appBar: new AppBar(
-          backgroundColor: Color(0xFFFE7367),
-        title: const Text('Paiement', style: TextStyle(color: Colors.white),),
-      ),
-      withZoom: true,
-      withLocalStorage: true,
-      hidden: true,
-      initialChild: Container(
-      color: Color(0xFFFE7367),
-      child: const Center(
-      child: CircularProgressIndicator(),
-      ),
-    ));
+          backgroundColor: Color(widget.theme),
+          title: const Text(
+            widget.title,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        withZoom: true,
+        withLocalStorage: true,
+        hidden: true,
+        initialChild: Container(
+          color: Color(widget.splashTheme),
+          child: const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(widget.theme),
+            ),
+          ),
+        ));
   }
 }
 
 class _SdkData {
-
   /**
    * @Params amount : Payment amount
    * @Params reason : Payment reason
@@ -108,10 +118,18 @@ class _SdkData {
    * @Params data : Payment data send by webhook
    * @Params sandbox : Payment request made in sandbox
    */
-  _SdkData({this.amount, this.reason,this.name, this.phone, this.data, this.sandbox = true,this.apikey});
+  _SdkData(
+      {this.amount,
+      this.reason,
+      this.name,
+      this.phone,
+      this.data,
+      this.sandbox = true,
+      this.apikey,
+      this.theme});
 
   final int amount;
-  final reason, name, sandbox, phone, data, apikey;
+  final reason, name, sandbox, phone, data, apikey, theme;
 
   Map<String, dynamic> toMap() {
     return {
