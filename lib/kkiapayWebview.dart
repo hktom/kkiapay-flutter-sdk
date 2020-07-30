@@ -9,8 +9,9 @@ class KKiaPay extends StatefulWidget {
   String phone;
   String data;
   String title;
-  Color theme;
-  Color splashTheme;
+  String primaryTheme;
+  int theme;
+  int splashTheme;
   String apikey;
   bool sandbox;
   Function callback;
@@ -23,12 +24,22 @@ class KKiaPay extends StatefulWidget {
       this.apikey,
       this.callback,
       this.title = 'Paiement',
-      this.theme = Color(0xFFFE7367)
-      this.splashTheme: Colors.white});
+      this.primaryTheme = 'FE7367',
+      this.theme = 0xFFFE7367,
+      this.splashTheme = 0xFFFFFF});
 
   @override
-  _KKiaPayState createState() => _KKiaPayState(this.amount, this.phone,
-      this.data, this.sandbox, this.apikey, this.callback, this.theme, this.title, this.splashTheme);
+  _KKiaPayState createState() => _KKiaPayState(
+      this.amount,
+      this.phone,
+      this.data,
+      this.sandbox,
+      this.apikey,
+      this.callback,
+      this.theme,
+      this.title,
+      this.splashTheme,
+      this.primaryTheme);
 }
 
 class _KKiaPayState extends State<KKiaPay> {
@@ -40,16 +51,26 @@ class _KKiaPayState extends State<KKiaPay> {
   final bool sandbox;
   final Function callback;
   final String title;
-  final Color theme;
-  final Color splashTheme;
+  final int theme;
+  final int splashTheme;
+  final String primaryTheme;
 
   ///
   // * @Params amount : Payment amount
   // * @Params phone : Payment phoneNumber
   // * @Params data : Payment data send by webhook
   //
-  _KKiaPayState(this.amount, this.phone, this.data, this.sandbox, this.apikey,
-      this.callback, this.theme, this.title, this.splashTheme);
+  _KKiaPayState(
+      this.amount,
+      this.phone,
+      this.data,
+      this.sandbox,
+      this.apikey,
+      this.callback,
+      this.theme,
+      this.title,
+      this.splashTheme,
+      this.primaryTheme);
 
   @override
   void initState() {
@@ -88,7 +109,7 @@ class _KKiaPayState extends State<KKiaPay> {
     print(this.sandbox);
     print('====================>');
     final url =
-        '$KKiaPayURL/?=${_SdkData(amount: this.amount, phone: this.phone, data: this.data, sandbox: this.sandbox, apikey: this.apikey, theme: this.theme).toBase64()}';
+        '$KKiaPayURL/?=${_SdkData(amount: this.amount, phone: this.phone, data: this.data, sandbox: this.sandbox, apikey: this.apikey, theme: this.primaryTheme).toBase64()}';
     return WebviewScaffold(
         url: url,
         appBar: new AppBar(
@@ -105,7 +126,7 @@ class _KKiaPayState extends State<KKiaPay> {
           color: Color(this.splashTheme),
           child: const Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(this.theme),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(this.theme)),
             ),
           ),
         ));
