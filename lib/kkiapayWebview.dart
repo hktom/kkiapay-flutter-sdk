@@ -23,12 +23,12 @@ class KKiaPay extends StatefulWidget {
       this.apikey,
       this.callback,
       this.title = 'Paiement',
-      this.theme = 0xFFFE7367,
+      this.theme = Color(0xFFFE7367)
       this.splashTheme: Colors.white});
 
   @override
   _KKiaPayState createState() => _KKiaPayState(this.amount, this.phone,
-      this.data, this.sandbox, this.apikey, this.callback);
+      this.data, this.sandbox, this.apikey, this.callback, this.theme, this.title, this.splashTheme);
 }
 
 class _KKiaPayState extends State<KKiaPay> {
@@ -39,6 +39,9 @@ class _KKiaPayState extends State<KKiaPay> {
   final String apikey;
   final bool sandbox;
   final Function callback;
+  final String title;
+  final Color theme;
+  final Color splashTheme;
 
   ///
   // * @Params amount : Payment amount
@@ -46,7 +49,7 @@ class _KKiaPayState extends State<KKiaPay> {
   // * @Params data : Payment data send by webhook
   //
   _KKiaPayState(this.amount, this.phone, this.data, this.sandbox, this.apikey,
-      this.callback);
+      this.callback, this.theme, this.title, this.splashTheme);
 
   @override
   void initState() {
@@ -85,13 +88,13 @@ class _KKiaPayState extends State<KKiaPay> {
     print(this.sandbox);
     print('====================>');
     final url =
-        '$KKiaPayURL/?=${_SdkData(amount: this.amount, phone: this.phone, data: this.data, sandbox: this.sandbox, apikey: this.apikey, theme: widget.theme).toBase64()}';
+        '$KKiaPayURL/?=${_SdkData(amount: this.amount, phone: this.phone, data: this.data, sandbox: this.sandbox, apikey: this.apikey, theme: this.theme).toBase64()}';
     return WebviewScaffold(
         url: url,
         appBar: new AppBar(
-          backgroundColor: Color(widget.theme),
+          backgroundColor: Color(this.theme),
           title: const Text(
-            widget.title,
+            this.title,
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -99,10 +102,10 @@ class _KKiaPayState extends State<KKiaPay> {
         withLocalStorage: true,
         hidden: true,
         initialChild: Container(
-          color: Color(widget.splashTheme),
+          color: Color(this.splashTheme),
           child: const Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(widget.theme),
+              valueColor: AlwaysStoppedAnimation<Color>(this.theme),
             ),
           ),
         ));
