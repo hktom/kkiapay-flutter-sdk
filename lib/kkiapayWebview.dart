@@ -24,7 +24,7 @@ class KKiaPay extends StatefulWidget {
       this.apikey,
       this.callback,
       this.title = 'Paiement',
-      this.primaryTheme = 'FE7367',
+      this.primaryTheme = '#FE7367',
       this.theme = 0xFFFE7367,
       this.splashTheme = 0xFFFFFF});
 
